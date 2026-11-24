@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#CF0358">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gestão">
+<title>Gestão Financeira · O Baratão</title>
+<link rel="icon" href="icone.png">
+<link rel="apple-touch-icon" href="icone.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700&display=swap">
+<style>
+:root{--p:#E5005E;--hd:#CF0358;--n:#0B2A6B;--cr:#FFF4EC;--ink:#1E2340;--mu:#7A7F99;--ln:#F3E0D8;--in:#1E8E5A;--out:#D92D20;
+--d:"Baloo 2","Trebuchet MS",sans-serif;--b:"Nunito",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.35 var(--b);background:var(--cr);color:var(--ink);padding-bottom:calc(110px + env(safe-area-inset-bottom,0px))}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--n);outline-offset:2px}
+.hide{display:none!important}
+.logo{display:block;width:100%;max-width:560px;margin:0 auto;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+#login{min-height:100vh;background:var(--hd);color:#fff;display:flex;flex-direction:column;justify-content:center;padding:30px 26px}
+#login .f{max-width:420px;width:100%;margin:0 auto}
+#login h1{font:800 26px var(--d);margin:10px 0 18px;text-align:center}
+#login input{width:100%;padding:16px;border-radius:16px;border:0;font:inherit;margin-bottom:12px}
+#login .go{width:100%;padding:16px;border-radius:16px;background:var(--n);color:#fff;font:800 19px var(--d)}
+#err{margin-top:12px;min-height:24px;text-align:center;font-weight:700}
+header{background:var(--hd);padding:env(safe-area-inset-top,0) 0 4px;border-radius:0 0 30px 30px;box-shadow:0 8px 0 var(--n);position:relative}
+.sair{position:absolute;right:10px;top:calc(8px + env(safe-area-inset-top,0px));color:#fff;font-size:14px;padding:8px;opacity:.9}
+main{max-width:640px;margin:0 auto;padding:26px 18px 0}
+h2{font:800 20px var(--d);margin:20px 4px 8px;color:var(--n)}
+.card{background:#fff;border-radius:22px;padding:6px 16px;margin:10px 0;box-shadow:0 3px 0 var(--ln)}
+.card.venc,.card.ok,.card.sum{padding:16px;color:#fff}
+.card.venc{background:var(--out)}.card.ok{background:var(--in)}.card.sum{background:var(--n)}
+.big{font:800 clamp(38px,12vw,52px)/1.05 var(--d)}
+.card small{opacity:.9;font-size:15px}
+.card.mes{display:flex;gap:6px;padding:14px 10px;text-align:center}
+.card.mes div{flex:1}.card.mes small{display:block;color:var(--mu)}.card.mes b{font:800 17px var(--d)}
+.aviso{background:#FFE08A;color:#4a3500;border-radius:16px;padding:12px 14px;font-weight:700}
+.it{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--ln)}
+.it:last-child{border:0}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.t{flex:1;min-width:0}
+.t b{display:block;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t b.pg{text-decoration:line-through;opacity:.5}
+.t small{color:var(--mu);font-size:14px}.t u{color:var(--out);font-weight:700;text-decoration:none}
+.val{font:800 17px var(--d);white-space:nowrap}
+.ck{width:34px;height:34px;border-radius:50%;border:2px solid var(--mu);flex:none;color:#fff;font-weight:800}
+.ck.on{background:var(--in);border-color:var(--in)}
+.x{width:36px;height:36px;color:var(--mu);font-size:18px}
+.vazio{color:var(--mu);padding:20px 0;text-align:center}
+.btn{display:block;width:100%;margin:14px 0 4px;padding:16px;border-radius:18px;background:var(--p);color:#fff;font:800 18px var(--d)}
+.dica{color:var(--mu);font-size:14px;margin:6px 4px}
+.mnav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mnav b{font:800 20px var(--d);text-transform:capitalize;color:var(--n)}
+.mnav button{width:44px;height:44px;border-radius:50%;background:#fff;font-size:22px;color:var(--n)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal>b{font-size:13px;color:var(--mu)}
+.d{min-height:62px;border-radius:14px;background:#fff;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 4px 4px 6px;text-align:left}
+.d .n{font-weight:800;font-size:17px;line-height:1.1}.d .vl{font-weight:700;font-size:11px;line-height:1.2}
+.vl.in{color:var(--in)}.vl.out{color:var(--out)}
+.d.hj{outline:2px solid var(--p)}.d.sel{background:var(--n);color:#fff}.d.sel .vl{color:#fff}
+.sheet .fx{display:flex;align-items:center;gap:10px;margin:2px 0 10px;font-size:15px;color:var(--ink)}
+.sheet .fx input{width:22px;height:22px;margin:0}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;padding:6px 6px calc(8px + env(safe-area-inset-bottom,0px));border-radius:24px 24px 0 0;box-shadow:0 -4px 16px rgba(11,42,107,.12)}
+nav button{font-size:12.5px;font-weight:700;color:var(--mu);padding:6px 0}
+nav button i{display:block;font-style:normal;font-size:22px}
+nav button.on{color:var(--p)}
+nav .mais{width:62px;height:62px;border-radius:50%;background:var(--p);color:#fff;font:800 36px/1 var(--d);margin:0 auto;transform:translateY(-16px);box-shadow:0 6px 14px rgba(229,0,94,.4);padding:0}
+#folha{position:fixed;inset:0;background:rgba(11,30,70,.55);display:flex;align-items:flex-end}
+.sheet{background:var(--cr);width:100%;max-width:640px;margin:0 auto;border-radius:28px 28px 0 0;padding:22px 18px calc(20px + env(safe-area-inset-bottom,0px));animation:sobe .2s ease-out}
+@keyframes sobe{from{transform:translateY(40px);opacity:0}}
+@media(prefers-reduced-motion:reduce){.sheet{animation:none}}
+.sheet h3{font:800 24px var(--d);color:var(--n);margin-bottom:12px}
+.sheet input{width:100%;padding:14px;border-radius:14px;border:2px solid var(--ln);font:inherit;background:#fff;margin-bottom:10px}
+#valor{font:800 30px var(--d)!important}
+.sheet label{font-size:14px;color:var(--mu);margin-left:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.chips button{padding:9px 15px;border-radius:999px;border:2px solid var(--ln);background:#fff}
+.chips button.on{background:var(--n);color:#fff;border-color:var(--n)}
+.salvar{width:100%;padding:16px;border-radius:16px;color:#fff;font:800 19px var(--d)}
+.cancelar{width:100%;padding:12px;color:var(--mu)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.grid button{padding:18px 8px;border-radius:18px;color:#fff;font:800 18px var(--d)}
+.grid .e{background:var(--in)}.grid .s,.grid .c{background:var(--out)}.grid .h{background:var(--n)}.grid .r{background:var(--p)}
+</style>
+</head>
+<body>
+
+<section id="login" class="hide">
+  <div class="f">
+    <img class="logo" src="logo-topo.jpg" alt="O Baratão">
+    <h1>Gestão Financeira</h1>
+    <input id="em" type="text" placeholder="Usuário" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+    <input id="se" type="password" placeholder="Senha" autocomplete="current-password">
+    <button class="go" id="entrar">Entrar</button>
+    <div id="err" role="alert"></div>
+  </div>
+</section>
+
+<div id="app" class="hide">
+  <header><img class="logo" src="logo-topo.jpg" alt="O Baratão · Gestão Financeira"><button class="sair" id="sair">Sair</button></header>
+  <main id="v"></main>
+  <nav>
+    <button data-aba="inicio"><i>🏠</i>Início</button>
+    <button data-aba="cal"><i>📅</i>Calendário</button>
+    <button class="mais" id="mais" aria-label="Adicionar">+</button>
+    <button data-aba="chq"><i>🧾</i>Cheques</button>
+    <button data-aba="par"><i>💳</i>Parcelas</button>
+  </nav>
+</div>
+
+<div id="folha" class="hide">
+  <div id="esc" class="sheet">
+    <h3>O que vai lançar?</h3>
+    <div class="grid">
+      <button class="e" data-k="entrada">+ Entrou</button>
+      <button class="s" data-k="saida">− Saiu</button>
+      <button class="c" data-k="conta">Conta a pagar</button>
+      <button class="h" data-k="cheque">Cheque</button>
+      <button class="r" data-k="parcela">Parcelado</button>
+    </div>
+    <button class="cancelar" id="cx">Cancelar</button>
+  </div>
+  <form id="form" class="sheet hide">
+    <h3 id="ftit"></h3>
+    <input id="valor" inputmode="decimal" autocomplete="off" required>
+    <input id="desc" autocomplete="off">
+    <label id="dlbl" for="data"></label>
+    <input id="data" type="date" required>
+    <label id="nlbl" for="npar"></label>
+    <input id="npar" type="number" min="1" max="48" inputmode="numeric">
+    <label id="fx" class="fx"><input type="checkbox" id="fixo" checked> Data fixa (mesmo dia todo mês)</label>
+    <div id="datas"></div>
+    <div class="chips" id="chips"></div>
+    <button class="salvar" id="salvar" type="submit">Salvar</button>
+    <button class="cancelar" id="cancelar" type="button">Cancelar</button>
+  </form>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,onSnapshot,addDoc,deleteDoc,updateDoc,writeBatch,doc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB11TquZGYE26Qv9p5iGRb8s7WeIeB3Af0",
+  authDomain: "financeiro-obaratao.firebaseapp.com",
+  projectId: "financeiro-obaratao",
+  appId: "1:989470934830:web:ee22458114bdca1351dcbf"
+};
+
+const KIND={entrada:{n:"Entrada",c:"--in"},saida:{n:"Saída",c:"--out"},conta:{n:"Conta",c:"--out",v:1},cheque:{n:"Cheque",c:"--n",v:1},parcela:{n:"Parcela",c:"--p",v:1}};
+const CATS={saida:["Mercado","Casa","Contas","Transporte","Lazer","Saúde","Outros"],entrada:["Salário","Extra","Outros"]};
+const $=id=>document.getElementById(id);
+const brl=n=>n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const p2=n=>String(n).padStart(2,"0");
+const ymd=d=>d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());
+const hoje=ymd(new Date());
+const dif=a=>Math.round((new Date(a+"T12:00")-new Date(hoje+"T12:00"))/864e5);
+const br=a=>a.slice(8)+"/"+a.slice(5,7);
+const esc=t=>String(t||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const paraEmail=u=>u.trim().toLowerCase().replace(/\s+/g,"")+"@nossopote.app";
+const quem=e=>{const n=(e||"").split("@")[0];return n.charAt(0).toUpperCase()+n.slice(1)};
+const addMes=(a,j)=>{const[y,m,d]=a.split("-").map(Number),t=new Date(y,m-1+j,1),u=new Date(t.getFullYear(),t.getMonth()+1,0).getDate();return ymd(new Date(t.getFullYear(),t.getMonth(),Math.min(d,u)))};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),COL=collection(db,"lancamentos");
+let user=null,unsub=null,itens=[],aba="inicio",kind="",cat="",dtSel=hoje,sel=hoje,cy=+hoje.slice(0,4),cm=+hoje.slice(5,7)-1;
+
+onAuthStateChanged(auth,u=>{
+  user=u;$("login").classList.toggle("hide",!!u);$("app").classList.toggle("hide",!u);
+  if(u&&!unsub)unsub=onSnapshot(COL,s=>{
+    itens=s.docs.map(d=>{const x=d.data();return{id:d.id,...x,k:x.kind||x.tipo,dt:x.data||(x.mes+"-"+p2(x.dia||1))}});desenhar()},
+    ()=>{$("v").innerHTML='<div class="vazio">Não foi possível carregar. Confira a internet e as regras do Firebase.</div>'});
+  if(!u&&unsub){unsub();unsub=null}
+});
+$("entrar").onclick=async()=>{$("err").textContent="";
+  try{await signInWithEmailAndPassword(auth,paraEmail($("em").value),$("se").value)}
+  catch(e){$("err").textContent="Usuário ou senha incorretos. Confira e tente de novo."}};
+$("sair").onclick=()=>signOut(auth);
+$("se").addEventListener("keydown",e=>{if(e.key==="Enter")$("entrar").click()});
+$("em").addEventListener("keydown",e=>{if(e.key==="Enter")$("se").focus()});
+
+const fmt=n=>n>=1000?(n/1000).toFixed(1).replace(".",",").replace(",0","")+"k":String(Math.round(n));
+const soma=l=>l.reduce((s,i)=>s+i.valor,0);
+const porData=(a,b)=>a.dt<b.dt?-1:a.dt>b.dt?1:0;
+function linha(i){
+  const K=KIND[i.k]||KIND.saida,late=K.v&&!i.pago&&i.dt<hoje;
+  return `<div class="it"><button class="ck${i.pago?" on":""}${K.v?"":" hide"}" data-ck="${i.id}" aria-label="Marcar como pago">${i.pago?"✓":""}</button>
+  <span class="dot" style="background:var(${K.c})"></span>
+  <div class="t"><b class="${i.pago?"pg":""}">${esc(i.desc||i.cat||K.n)}${i.de>1?` ${i.n}/${i.de}`:""}</b><small>${K.n} · ${br(i.dt)}${late?" · <u>vencido</u>":""} · ${esc(i.por)}</small></div>
+  <span class="val" style="color:var(${K.c})">${i.k==="entrada"?"+":""}${brl(i.valor)}</span>
+  <button class="x" data-del="${i.id}" aria-label="Apagar">✕</button></div>`;
+}
+function inicio(){
+  const ven=itens.filter(i=>KIND[i.k]?.v&&!i.pago).sort(porData);
+  const atr=ven.filter(i=>i.dt<hoje),prox=ven.filter(i=>i.dt>=hoje&&dif(i.dt)<=7),soon=ven.filter(i=>i.dt>=hoje&&dif(i.dt)<=2);
+  const mv=itens.filter(i=>i.dt.startsWith(hoje.slice(0,7))),ent=soma(mv.filter(i=>i.k==="entrada")),sai=soma(mv.filter(i=>i.k==="saida"));
+  return (soon.length?`<div class="aviso">🔔 ${soon.length>1?soon.length+" vencem":"1 vence"} em até 2 dias: ${brl(soma(soon))}</div>`:"")+
+  `<div class="card ${atr.length?"venc":"ok"}"><small>Vencido</small><div class="big">${brl(soma(atr))}</div><small>${atr.length?atr.length+(atr.length>1?" itens atrasados":" item atrasado"):"Nada atrasado 🎉"}</small></div>`+
+  (atr.length?`<div class="card">${atr.map(linha).join("")}</div>`:"")+
+  `<h2>Próximos 7 dias</h2><div class="card">${prox.length?prox.map(linha).join(""):'<div class="vazio">Nada vencendo nesta semana.</div>'}</div>`+
+  `<h2>Neste mês</h2><div class="card mes"><div><small>Entrou</small><b style="color:var(--in)">${brl(ent)}</b></div><div><small>Saiu</small><b style="color:var(--out)">${brl(sai)}</b></div><div><small>Sobrou</small><b>${brl(ent-sai)}</b></div></div>`+
+  `<button class="btn" id="ics">🔔 Lembretes no celular</button><p class="dica">Baixa um arquivo para o calendário do celular, que avisa 2 dias antes e no dia do vencimento. Baixe de novo quando lançar algo novo.</p>`;
+}
+function cal(){
+  const n=new Date(cy,cm+1,0).getDate(),off=new Date(cy,cm,1).getDay();
+  let g=["D","S","T","Q","Q","S","S"].map(x=>`<b>${x}</b>`).join("")+"<span></span>".repeat(off);
+  for(let d=1;d<=n;d++){const ds=cy+"-"+p2(cm+1)+"-"+p2(d),its=itens.filter(i=>i.dt===ds),
+      ent=soma(its.filter(i=>i.k==="entrada")),sai=soma(its.filter(i=>i.k==="saida"||(KIND[i.k]?.v&&!i.pago)));
+    g+=`<button class="d${ds===hoje?" hj":""}${ds===sel?" sel":""}" data-dia="${ds}"><span class="n">${d}</span>${ent?`<span class="vl in">${fmt(ent)}</span>`:""}${sai?`<span class="vl out">${fmt(sai)}</span>`:""}</button>`}
+  const dia=itens.filter(i=>i.dt===sel);
+  return `<div class="mnav"><button data-mm="-1" aria-label="Mês anterior">‹</button><b>${new Date(cy,cm,1).toLocaleDateString("pt-BR",{month:"long",year:"numeric"})}</b><button data-mm="1" aria-label="Próximo mês">›</button></div>
+  <div class="cal">${g}</div><p class="dica">Em cada dia: verde é o que entra, vermelho é o que vai sair. Toque no dia para ver os nomes.</p>
+  <h2>${br(sel)}${sel===hoje?" (hoje)":""}</h2><div class="card" id="dia">${dia.length?dia.map(linha).join(""):'<div class="vazio">Nada neste dia.</div>'}</div>
+  <button class="btn" data-add="${sel}">+ Adicionar em ${br(sel)}</button>`;
+}
+function lista(k,tit,btn){
+  const l=itens.filter(i=>i.k===k).sort(porData),pen=l.filter(i=>!i.pago);
+  return `<div class="card sum"><small>${tit}</small><div class="big">${brl(soma(pen))}</div><small>${pen.length} em aberto</small></div>
+  <div class="card">${l.length?l.map(linha).join(""):'<div class="vazio">Nada cadastrado ainda.</div>'}</div><button class="btn" data-novo="${k}">${btn}</button>`;
+}
+const VIEWS={inicio,cal,chq:()=>lista("cheque","Cheques a compensar","+ Novo cheque"),par:()=>lista("parcela","Parcelas em aberto","+ Novo parcelamento")};
+function desenhar(){
+  $("v").innerHTML=VIEWS[aba]();
+  document.querySelectorAll("nav [data-aba]").forEach(b=>b.classList.toggle("on",b.dataset.aba===aba));
+}
+document.querySelectorAll("nav [data-aba]").forEach(b=>b.onclick=()=>{aba=b.dataset.aba;desenhar();scrollTo(0,0)});
+$("mais").onclick=()=>escolher(hoje);
+
+$("v").onclick=async e=>{
+  const t=e.target.closest("button");if(!t)return;const D=t.dataset;
+  if(D.ck){const i=itens.find(x=>x.id===D.ck);await updateDoc(doc(db,"lancamentos",D.ck),{pago:!i.pago})}
+  else if(D.del){if(confirm("Apagar este lançamento? Ele some para os dois."))await deleteDoc(doc(db,"lancamentos",D.del))}
+  else if(D.dia){sel=D.dia;desenhar();$("dia").scrollIntoView({behavior:"smooth",block:"nearest"})}
+  else if(D.mm){cm+=+D.mm;if(cm<0){cm=11;cy--}if(cm>11){cm=0;cy++}desenhar()}
+  else if(D.add)escolher(D.add);
+  else if(D.novo)abrir(D.novo,hoje);
+  else if(t.id==="ics")ics();
+};
+function ics(){
+  const ven=itens.filter(i=>KIND[i.k]?.v&&!i.pago&&i.dt>=hoje);
+  if(!ven.length){alert("Não há vencimentos pendentes para lembrar.");return}
+  const al=(t,m)=>`BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:${m}\r\nTRIGGER:${t}\r\nEND:VALARM\r\n`,st=new Date().toISOString().replace(/[-:]|\.\d+/g,"");
+  let s="BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Gestao Baratao//PT\r\n";
+  ven.forEach(i=>{const d=i.dt.replace(/-/g,"");
+    s+=`BEGIN:VEVENT\r\nUID:${i.id}@gestao\r\nDTSTAMP:${st}\r\nDTSTART;VALUE=DATE:${d}\r\nSUMMARY:${KIND[i.k].n}: ${(i.desc||"").replace(/[,;\n]/g," ")} - ${brl(i.valor)}\r\n`+al("-P1DT15H","Vence em 2 dias")+al("PT9H","Vence hoje")+"END:VEVENT\r\n"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([s+"END:VCALENDAR"],{type:"text/calendar"}));a.download="vencimentos.ics";a.click();
+}
+
+function mostrar(x){$("folha").classList.remove("hide");$("esc").classList.toggle("hide",x!=="esc");$("form").classList.toggle("hide",x!=="form")}
+function escolher(dt){dtSel=dt;mostrar("esc")}
+const fechar=()=>$("folha").classList.add("hide");
+$("esc").onclick=e=>{const b=e.target.closest("[data-k]");if(b)abrir(b.dataset.k,dtSel)};
+$("cx").onclick=fechar;$("cancelar").onclick=fechar;
+$("folha").onclick=e=>{if(e.target.id==="folha")fechar()};
+function abrir(k,dt){
+  kind=k;const v=KIND[k].v,mov=!v;
+  $("ftit").textContent={entrada:"Quanto entrou?",saida:"Quanto saiu?",conta:"Conta a pagar",cheque:"Novo cheque",parcela:"Novo parcelamento"}[k];
+  $("valor").placeholder=k==="parcela"?"Valor de cada parcela":k==="cheque"?"Valor do cheque (de cada um)":"R$ 0,00";
+  $("desc").placeholder={entrada:"De onde veio?",saida:"O que foi? (ex.: mercado)",conta:"Qual conta? (ex.: luz)",cheque:"Nome ou número do cheque",parcela:"O que foi parcelado?"}[k];
+  $("dlbl").textContent=v?(k==="conta"?"Vence em":"Vence em (1º vencimento)"):"Data";
+  $("data").value=dt||hoje;$("valor").value="";$("desc").value="";
+  ["npar","nlbl"].forEach(x=>$(x).classList.toggle("hide",k!=="cheque"&&k!=="parcela"));
+  $("npar").value=k==="parcela"?2:1;$("fixo").checked=true;
+  $("nlbl").textContent=k==="cheque"?"Quantos cheques? (1 = só um)":"Quantas parcelas?";renderDatas();
+  const l=CATS[k]||[];cat=l[0]||"";$("chips").classList.toggle("hide",!mov);
+  $("chips").innerHTML=l.map((c,i)=>`<button type="button" class="${i?"":"on"}">${c}</button>`).join("");
+  $("salvar").style.background=`var(${KIND[k].c})`;mostrar("form");setTimeout(()=>$("valor").focus(),50);
+}
+const nParc=()=>(kind==="cheque"||kind==="parcela")?Math.min(48,Math.max(1,parseInt($("npar").value)||1)):1;
+function renderDatas(){
+  const N=nParc();$("fx").classList.toggle("hide",N<2);
+  $("datas").innerHTML=N>1&&!$("fixo").checked?Array.from({length:N},(_,j)=>`<label>${j+1}ª data</label><input type="date" class="dj" value="${addMes($("data").value||hoje,j)}">`).join(""):"";
+}
+$("npar").oninput=renderDatas;$("fixo").onchange=renderDatas;$("data").onchange=renderDatas;
+$("chips").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  [...$("chips").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");cat=b.textContent};
+$("form").onsubmit=async e=>{
+  e.preventDefault();
+  const v=parseFloat($("valor").value.replace(/\./g,"").replace(",","."));
+  if(!(v>0)){$("valor").focus();return}
+  const data=$("data").value||hoje,V=KIND[kind].v,N=nParc();
+  const base={kind,valor:Math.round(v*100)/100,desc:$("desc").value.trim(),por:quem(user.email),criado:serverTimestamp()};
+  let ds=Array.from({length:N},(_,j)=>addMes(data,j));
+  if(N>1&&!$("fixo").checked){ds=[...document.querySelectorAll(".dj")].map(x=>x.value);if(ds.length!==N||ds.some(x=>!x)){alert("Preencha todas as datas.");return}}
+  $("salvar").disabled=true;
+  try{
+    if(N>1){const b=writeBatch(db),g=Date.now();
+      ds.forEach((d,j)=>b.set(doc(COL),{...base,data:d,n:j+1,de:N,grp:g,pago:false}));await b.commit()}
+    else await addDoc(COL,V?{...base,data,pago:false}:{...base,data,cat});
+    sel=data;cy=+data.slice(0,4);cm=+data.slice(5,7)-1;fechar();
+  }catch(err){alert("Não salvou. Confira a internet e tente de novo.")}
+  $("salvar").disabled=false;
+};
+</script>
+</body>
+</html>
